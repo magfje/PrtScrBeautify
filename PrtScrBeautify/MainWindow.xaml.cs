@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -14,15 +17,17 @@ public partial class MainWindow : INotifyPropertyChanged
     //private MemoryStream _ms;
     private BitmapImage _mImage;
     private ScreenshotWatcher? _screenshotWatcher;
+    public List<IModification> modList;
 
     public MainWindow()
     {
         InitializeComponent();
-        AddRounded = true;
-        AddDropShadow = true;
-        AddBlurBehind = true;
-        CornerRadius = 10;
-        AddSolidBorder = false;
+        var bbl = new BlurBehindMod();
+        var ds = new DropShadowMod();
+        var sb = new SolidBorderMod();
+        var rc = new RoundedCornersMod(50);
+        var rc2 = new RoundedCornersMod(10);
+        modList = new List<IModification>() { rc, ds, rc2, bbl, rc };
 
         TargetFolderPath = @"C:\Users\magfj\Pictures\Screenshots";
         DataContext = this;
@@ -50,7 +55,7 @@ public partial class MainWindow : INotifyPropertyChanged
     }
 
     // Implement the INotifyPropertyChanged interface
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged; //INotifyCollectionChanged  https://learn.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=net-7.0
 
     protected virtual void OnPropertyChanged(string propertyName)
     {
@@ -82,7 +87,8 @@ public partial class MainWindow : INotifyPropertyChanged
         var imgSource = Image.Load<Rgba32>(imgLocation);
         var img = imgSource.Clone();
         var b = new Beautify();
-        var modImg = b.ApplyModifications(img);
+        //var modImg = b.ApplyModifications(img);
+        var modImg = ImageMods(img);
         var ms = new MemoryStream();
         modImg.Save(ms, new PngEncoder());
 
@@ -100,5 +106,15 @@ public partial class MainWindow : INotifyPropertyChanged
 
     private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+    }
+
+    private Image<Rgba32> ImageMods(Image<Rgba32> image)
+    {
+        foreach (var mod in modList)
+        {
+            image = mod.Apply(image);
+        }
+
+        return image;
     }
 }

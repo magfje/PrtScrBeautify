@@ -37,5 +37,6 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,171,0,70"/>
     </Grid>
 </Window>
