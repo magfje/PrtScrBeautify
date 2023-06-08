@@ -1,7 +1,7 @@
-﻿using SixLabors.ImageSharp.Drawing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace PrtScrBeautify;
@@ -12,6 +12,7 @@ public class Beautify
     private static bool _addDropShadow;
     private static int _cornerRadius;
     private static bool _addBlurBehind;
+    private static bool _addSolidBorder;
 
     public static void SetRoundedCorners(bool value)
     {
@@ -33,10 +34,16 @@ public class Beautify
         _addBlurBehind = value;
     }
 
+    public static void SetSolidBorder(bool value)
+    {
+        _addSolidBorder = value;
+    }
+
     public Image<Rgba32> ApplyModifications(Image<Rgba32> image)
     {
         var modifiedImage = image.Clone();
         if (_addBlurBehind) return ApplyBlurredBehind(modifiedImage);
+        if (_addSolidBorder) return ApplySolidBorder(modifiedImage);
         if (_addDropShadow) return ApplyDropShadow(modifiedImage);
         if (_addRoundedCorners) return ApplyRoundedCorners(modifiedImage);
         return modifiedImage;
@@ -84,10 +91,7 @@ public class Beautify
 
         var fullImage = new Image<Rgba32>(image.Width + shadowOffset.Width, image.Height + shadowOffset.Height);
 
-        dropShadow.Mutate(ctx =>
-        {
-            ctx.Fill(shadowColor);
-        });
+        dropShadow.Mutate(ctx => { ctx.Fill(shadowColor); });
         fullImage.Mutate(ctx =>
         {
             ctx.DrawImage(_addRoundedCorners ? ApplyRoundedCorners(dropShadow) : dropShadow, new Point(0, 3), 1f);
@@ -110,7 +114,29 @@ public class Beautify
         {
             ctx.Resize(borderOffset);
             ctx.GaussianBlur(5);
-            
+
+            if (_addDropShadow) image = ApplyDropShadow(image);
+            if (_addRoundedCorners) image = ApplyRoundedCorners(image);
+            ctx.DrawImage(image, new Point(offset / 2, offset / 2), 1f);
+        });
+
+        return _addRoundedCorners ? ApplyRoundedCorners(border) : border;
+    }
+
+    private static Image<Rgba32> ApplySolidBorder(Image<Rgba32> image)
+    {
+        // copy and modify this to create solid border / blurred border.
+        // TODO: add shadowColor and offset to object properties!
+
+        var offset = 100;
+        var borderOffset = new Size(image.Width + offset, image.Height + offset);
+        var border = new Image<Rgba32>(borderOffset.Width, borderOffset.Height);
+        border.Mutate(ctx =>
+        {
+            //ctx.Resize(borderOffset);
+            //ctx.GaussianBlur(5);
+            ctx.Fill(Color.Crimson);
+
             if (_addDropShadow) image = ApplyDropShadow(image);
             if (_addRoundedCorners) image = ApplyRoundedCorners(image);
             ctx.DrawImage(image, new Point(offset / 2, offset / 2), 1f);
