@@ -21,7 +21,7 @@ namespace PrtScrBeautify
         public Image<Rgba32> TesterImage { get; set; }
         
         private ScreenshotWatcher? _screenshotWatcher;
-        private MemoryStream _ms;
+        //private MemoryStream _ms;
         private BitmapImage mImage;
         public BitmapImage MImage
         {
@@ -76,17 +76,17 @@ namespace PrtScrBeautify
         private void UpdateImage()
         {
             //UpdateLayout();
-            var imgLocation = @"C:\Users\magfj\source\repos\magfje\PrtScrBeautify\PrtScrBeautify\img.jpg";
+            var imgLocation = "C:\\Users\\magfj\\Source\\Repos\\magfje\\PrtScrBeautify\\PrtScrBeautify\\img.jpg";
             var imgSource = Image.Load<Rgba32>(imgLocation);
             var img = imgSource.Clone();
             var b = new Beautify();
             var modImg = b.ApplyModifications(img);
-            _ms = new MemoryStream();
-            modImg.Save(_ms, new PngEncoder());
+            var ms = new MemoryStream();
+            modImg.Save(ms, new PngEncoder());
 
             var myBitmapImage = new BitmapImage();
             myBitmapImage.BeginInit();
-            myBitmapImage.StreamSource = _ms;
+            myBitmapImage.StreamSource = ms;
             myBitmapImage.EndInit();
             MImage = myBitmapImage;
         }
