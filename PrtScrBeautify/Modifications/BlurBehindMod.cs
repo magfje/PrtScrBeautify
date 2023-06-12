@@ -6,20 +6,29 @@ namespace PrtScrBeautify;
 
 public class BlurBehindMod : IModification
 {
+    private readonly int _blurAumount;
+    private readonly int _offset;
+
+    public BlurBehindMod(int offset, int blurAmount)
+    {
+        _offset = offset;
+        _blurAumount = blurAmount;
+    }
+
     public Image<Rgba32> Apply(Image<Rgba32> image)
     {
         // copy and modify this to create solid border / blurred border.
         // TODO: add shadowColor and offset to object properties!
 
-        var offset = 100;
-        var borderOffset = new Size(image.Width + offset, image.Height + offset);
+        var borderOffset = new Size(image.Width + _offset, image.Height + _offset);
         var border = image.Clone();
         border.Mutate(ctx =>
         {
             ctx.Resize(borderOffset);
-            ctx.GaussianBlur(5);
-            ctx.DrawImage(image, new Point(offset / 2, offset / 2), 1f);
+            ctx.GaussianBlur(_blurAumount);
+            ctx.DrawImage(image, new Point(_offset / 2, _offset / 2), 1f);
         });
+
 
         return border;
     }

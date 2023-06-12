@@ -1,16 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.ColorSpaces;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
-
 
 namespace PrtScrBeautify;
 
@@ -18,10 +15,13 @@ public class ScreenshotWatcher
 {
     private readonly string _targetFolderPath;
     private string? _filePath;
+    private readonly List<IModification> _modList;
     private FileSystemWatcher? _watcher;
 
-    public ScreenshotWatcher(string targetFolderPath) {
-        this._targetFolderPath = targetFolderPath;
+    public ScreenshotWatcher(string targetFolderPath, List<IModification> modList)
+    {
+        _targetFolderPath = targetFolderPath;
+        _modList = modList;
     }
 
     public void Start()
@@ -51,7 +51,7 @@ public class ScreenshotWatcher
         {
             Trace.WriteLine("New file detected! - " + _filePath);
             var img = Image.Load<Rgba32>(_filePath);
-            var beautify = new Beautify();
+            var beautify = new Beautify(_modList);
             var modifiedImage = beautify.ApplyModifications(img);
 
 
@@ -70,7 +70,7 @@ public class ScreenshotWatcher
         }
         catch (Exception ex)
         {
-            Trace.WriteLine(ex.Message, ex.StackTrace);
+            Trace.WriteLine(ex.StackTrace);
         }
 
         // Disable further file watching after a timeout of 2 seconds
@@ -86,7 +86,6 @@ public class ScreenshotWatcher
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         thread.Join();
-        thread.Interrupt(); // Does this do anything for performance?
         Trace.WriteLine("Image copied to clipboard");
     }
     //private static void ImgToClip(BitmapImage img)

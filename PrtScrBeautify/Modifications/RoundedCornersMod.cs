@@ -8,15 +8,16 @@ namespace PrtScrBeautify;
 
 public class RoundedCornersMod : IModification
 {
-    private int _cornerRadius;
+    private readonly int _cornerRadius;
+
     public RoundedCornersMod(int cornerRadius)
     {
         _cornerRadius = cornerRadius;
     }
+
     public Image<Rgba32> Apply(Image<Rgba32> image)
     {
-        var size = image.Size;
-        var corners = BuildCorners(size.Width, size.Height);
+        var corners = BuildCorners(image.Width, image.Height);
 
         image.Mutate(ctx =>
         {
