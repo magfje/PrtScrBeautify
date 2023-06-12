@@ -70,12 +70,12 @@ public partial class MainWindow : INotifyPropertyChanged
     private void StartScreenshotWatcher()
     {
         UpdateImage();
-        if (_screenshotWatcher != null) _screenshotWatcher.Stop();
+        //if (_screenshotWatcher != null) _screenshotWatcher.Stop();
         _screenshotWatcher = new ScreenshotWatcher(TargetFolderPath);
         _screenshotWatcher.Start();
     }
 
-    private void UpdateImage()
+    private void UpdateImage() 
     {
         //UpdateLayout();
         var imgLocation = "C:\\Users\\magfj\\Source\\Repos\\magfje\\PrtScrBeautify\\PrtScrBeautify\\img.jpg";
