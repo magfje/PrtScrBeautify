@@ -70,7 +70,7 @@ public partial class MainWindow : INotifyPropertyChanged
     private void StartScreenshotWatcher()
     {
         UpdateImage();
-        if (_screenshotWatcher != null) _screenshotWatcher.Stop();
+        //if (_screenshotWatcher != null) _screenshotWatcher.Stop();
         _screenshotWatcher = new ScreenshotWatcher(TargetFolderPath, _modList);
         _screenshotWatcher.Start();
     }
