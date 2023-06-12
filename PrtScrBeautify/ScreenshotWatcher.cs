@@ -26,13 +26,10 @@ public class ScreenshotWatcher
 
     public void Start()
     {
-        // Initialize the FileSystemWatcher
         _watcher = new FileSystemWatcher();
         _watcher.Path = _targetFolderPath;
         _watcher.Filter = "*.png";
         _watcher.Created += OnFileCreated;
-
-        // Start watching
         _watcher.EnableRaisingEvents = true;
     }
 
@@ -44,9 +41,7 @@ public class ScreenshotWatcher
     private void OnFileCreated(object sender, FileSystemEventArgs e)
     {
         _filePath = e.FullPath;
-        // Perform actions on the first newly created file
         if (string.IsNullOrEmpty(_filePath)) return;
-        // Perform actions on the newly created file (e.g., add to clipboard)
         try
         {
             Trace.WriteLine("New file detected! - " + _filePath);
@@ -73,7 +68,6 @@ public class ScreenshotWatcher
             Trace.WriteLine(ex.StackTrace);
         }
 
-        // Disable further file watching after a timeout of 2 seconds
         if (_watcher == null) return;
         _watcher.EnableRaisingEvents = false;
         Task.Delay(2000).ContinueWith(_ => { _watcher.EnableRaisingEvents = true; });

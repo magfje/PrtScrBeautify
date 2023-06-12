@@ -33,11 +33,6 @@ public partial class MainWindow : INotifyPropertyChanged
         StartScreenshotWatcher();
     }
 
-    public static bool AddRounded { get; set; }
-    public static bool AddDropShadow { get; set; }
-    public static bool AddBlurBehind { get; set; }
-    public static int CornerRadius { get; set; }
-    public static bool AddSolidBorder { get; set; }
     public string TargetFolderPath { get; set; }
 
     public BitmapImage MImage
@@ -53,7 +48,6 @@ public partial class MainWindow : INotifyPropertyChanged
         }
     }
 
-    // Implement the INotifyPropertyChanged interface
     public event PropertyChangedEventHandler?
         PropertyChanged; //INotifyCollectionChanged  https://learn.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=net-7.0
 
