@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PrtScrBeautify"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#FF232136">
+        Title="MainWindow" Height="587" Width="959" Background="#FF232136">
     <Window.Resources>
         <AlternationConverter x:Key="AlternationConverter"/>
     </Window.Resources>
@@ -15,15 +15,15 @@
             <ColumnDefinition Width="15*"/>
             <ColumnDefinition Width="572*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Add Rounded Corners" Margin="12,14,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="147" />
-        <CheckBox x:Name="DropShadowCheckbox" IsChecked="{Binding AddDropShadow, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="174,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="ModificationsToApply" Height="13" Width="15" Foreground="#FF9CCFD8"/>
-        <Label Content="Add Drop Shadow" Margin="12,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="26" Width="118" />
-        <CheckBox x:Name="RoundedCheckBox" Margin="174,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding AddRounded, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Click="ModificationsToApply" Height="13" Width="15" Foreground="#FFEA9A97" />
-        <CheckBox x:Name="BlurCheckBox" IsChecked="{Binding AddBlurBehind, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="174,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="ModificationsToApply" Height="13" Width="15" Foreground="#FFEA9A97" />
-        <Label Content="Add Blurred Behind" Margin="12,74,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="26" Width="140" />
+        <Label Content="Rounded Corners" Margin="12,14,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="190" FontSize="18" />
+        <CheckBox x:Name="DropShadowCheckbox" IsChecked="{Binding AddDropShadow, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="221,102,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="ModificationsToApply" Height="20" Width="19" Foreground="#FF9CCFD8"/>
+        <Label Content="Drop Shadow" Margin="12,93,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="40" Width="152" FontSize="18" />
+        <CheckBox x:Name="RoundedCheckBox" Margin="221,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding AddRounded, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Click="ModificationsToApply" Height="21" Width="19" Foreground="#FFEA9A97" />
+        <CheckBox x:Name="BlurCheckBox" IsChecked="{Binding AddBlurBehind, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="221,149,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="ModificationsToApply" Height="20" Width="19" Foreground="#FFEA9A97" />
+        <Label Content="Blurred Behind" Margin="12,139,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="41" Width="181" FontSize="18" />
         <Button x:Name="StartWatcher" Content="Apply" Margin="15,0,15,15" Click="Button_Click" Background="#FFEA9A97" Height="50" VerticalAlignment="Bottom"/>
-        <Label Content="Rounded Radius" Margin="12,104,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="26" Width="111" />
-        <TextBox HorizontalAlignment="Left" Height="19" Margin="132,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" TextChanged="TextBox_TextChanged" Text="{Binding CornerRadius, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" TextInput="ModificationsToApply"/>
+        <Label Content="Radius" Margin="51,47,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.554,0.513" Height="41" Width="116" FontSize="14" />
+        <TextBox HorizontalAlignment="Left" Height="29" Margin="167,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" TextChanged="TextBox_TextChanged" Text="{Binding CornerRadius, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" TextInput="ModificationsToApply"/>
         <Image Margin="15,15,15,15" Grid.Column="2" Source="{Binding MImage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Center" Height="434" VerticalAlignment="Center" Width="0"/>
         <Border BorderThickness="1" Grid.Column="1" HorizontalAlignment="Center" Width="3" Margin="0,10,0,20">

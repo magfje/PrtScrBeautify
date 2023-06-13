@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,8 @@ namespace PrtScrBeautify;
 
 public partial class MainWindow : INotifyPropertyChanged
 {
+    private readonly List<IModification> _modList;
+
     //private MemoryStream _ms;
     private BitmapImage _mImage;
     private ScreenshotWatcher? _screenshotWatcher;
@@ -18,22 +21,18 @@ public partial class MainWindow : INotifyPropertyChanged
     public MainWindow()
     {
         InitializeComponent();
-        AddRounded = true;
-        AddDropShadow = true;
-        AddBlurBehind = true;
-        CornerRadius = 10;
-        AddSolidBorder = false;
+        var bbl = new BlurBehindMod(100, 4);
+        var ds = new DropShadowMod();
+        var sb = new SolidBorderMod();
+        var rc = new RoundedCornersMod(50);
+        var rc2 = new RoundedCornersMod(10);
+        _modList = new List<IModification> { rc, ds, rc, bbl };
 
         TargetFolderPath = @"C:\Users\magfj\Pictures\Screenshots";
         DataContext = this;
         StartScreenshotWatcher();
     }
 
-    public static bool AddRounded { get; set; }
-    public static bool AddDropShadow { get; set; }
-    public static bool AddBlurBehind { get; set; }
-    public static int CornerRadius { get; set; }
-    public static bool AddSolidBorder { get; set; }
     public string TargetFolderPath { get; set; }
 
     public BitmapImage MImage
@@ -49,8 +48,8 @@ public partial class MainWindow : INotifyPropertyChanged
         }
     }
 
-    // Implement the INotifyPropertyChanged interface
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler?
+        PropertyChanged; //INotifyCollectionChanged  https://learn.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=net-7.0
 
     protected virtual void OnPropertyChanged(string propertyName)
     {
@@ -59,11 +58,6 @@ public partial class MainWindow : INotifyPropertyChanged
 
     private void ModificationsToApply(object sender, RoutedEventArgs routedEventArgs)
     {
-        Beautify.SetRoundedCorners(AddRounded);
-        Beautify.SetDropShadow(AddDropShadow);
-        Beautify.SetBlurBehind(AddBlurBehind);
-        Beautify.SetCornerRadius(CornerRadius);
-        Beautify.SetSolidBorder(AddSolidBorder);
         StartScreenshotWatcher();
     }
 
@@ -71,7 +65,7 @@ public partial class MainWindow : INotifyPropertyChanged
     {
         UpdateImage();
         //if (_screenshotWatcher != null) _screenshotWatcher.Stop();
-        _screenshotWatcher = new ScreenshotWatcher(TargetFolderPath);
+        _screenshotWatcher = new ScreenshotWatcher(TargetFolderPath, _modList);
         _screenshotWatcher.Start();
     }
 
@@ -81,8 +75,8 @@ public partial class MainWindow : INotifyPropertyChanged
         var imgLocation = "C:\\Users\\magfj\\Source\\Repos\\magfje\\PrtScrBeautify\\PrtScrBeautify\\img.jpg";
         var imgSource = Image.Load<Rgba32>(imgLocation);
         var img = imgSource.Clone();
-        var b = new Beautify();
-        var modImg = b.ApplyModifications(img);
+
+        var modImg = new Beautify(_modList).ApplyModifications(img);
         var ms = new MemoryStream();
         modImg.Save(ms, new PngEncoder());
 
@@ -99,6 +93,10 @@ public partial class MainWindow : INotifyPropertyChanged
     }
 
     private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+    }
+
+    private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
     }
 }

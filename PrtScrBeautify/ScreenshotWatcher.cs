@@ -1,16 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.ColorSpaces;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
-
 
 namespace PrtScrBeautify;
 
@@ -18,21 +15,21 @@ public class ScreenshotWatcher
 {
     private readonly string _targetFolderPath;
     private string? _filePath;
+    private readonly List<IModification> _modList;
     private FileSystemWatcher? _watcher;
 
-    public ScreenshotWatcher(string targetFolderPath) {
-        this._targetFolderPath = targetFolderPath;
+    public ScreenshotWatcher(string targetFolderPath, List<IModification> modList)
+    {
+        _targetFolderPath = targetFolderPath;
+        _modList = modList;
     }
 
     public void Start()
     {
-        // Initialize the FileSystemWatcher
         _watcher = new FileSystemWatcher();
         _watcher.Path = _targetFolderPath;
         _watcher.Filter = "*.png";
         _watcher.Created += OnFileCreated;
-
-        // Start watching
         _watcher.EnableRaisingEvents = true;
     }
 
@@ -44,14 +41,12 @@ public class ScreenshotWatcher
     private void OnFileCreated(object sender, FileSystemEventArgs e)
     {
         _filePath = e.FullPath;
-        // Perform actions on the first newly created file
         if (string.IsNullOrEmpty(_filePath)) return;
-        // Perform actions on the newly created file (e.g., add to clipboard)
         try
         {
             Trace.WriteLine("New file detected! - " + _filePath);
             var img = Image.Load<Rgba32>(_filePath);
-            var beautify = new Beautify();
+            var beautify = new Beautify(_modList);
             var modifiedImage = beautify.ApplyModifications(img);
 
 
@@ -70,10 +65,9 @@ public class ScreenshotWatcher
         }
         catch (Exception ex)
         {
-            Trace.WriteLine(ex.Message, ex.StackTrace);
+            Trace.WriteLine(ex.StackTrace);
         }
 
-        // Disable further file watching after a timeout of 2 seconds
         if (_watcher == null) return;
         _watcher.EnableRaisingEvents = false;
         Task.Delay(2000).ContinueWith(_ => { _watcher.EnableRaisingEvents = true; });
@@ -86,7 +80,6 @@ public class ScreenshotWatcher
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         thread.Join();
-        thread.Interrupt(); // Does this do anything for performance?
         Trace.WriteLine("Image copied to clipboard");
     }
     //private static void ImgToClip(BitmapImage img)
